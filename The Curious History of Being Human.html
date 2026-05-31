@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Curious History of Being Human — I Explains You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============== TOKENS ============== */
+  :root {
+    --midnight:    #0c1124;
+    --midnight-2:  #0f1730;
+    --blue-deep:   #142143;
+    --blue-mid:    #1d2c54;
+    --blue-soft:   #2a3c68;
+
+    --ivory:       #f4ead7;
+    --ivory-2:     #efe3cd;
+    --paper:       #f3ebdc;
+    --paper-2:     #ece0ca;
+
+    --ink:         #221b10;   /* warm near-black on paper */
+    --ink-soft:    #5c5340;   /* muted warm text on paper */
+    --ink-faint:   #8a7f67;
+
+    --cream:       #f4ead7;   /* primary text on midnight */
+    --cream-soft:  #cdd4e6;   /* secondary text on midnight */
+    --cave-blue:   #8a9bc0;   /* pale cave-line blue */
+
+    --ember:       #ef8a35;
+    --amber:       #f6b24a;
+    --fire:        #ffcf6b;
+    --ochre:       #c98a4a;
+    --ember-ink:   #bf6418;   /* deeper ember for text/links on paper */
+
+    --maxw: 1180px;
+    --pad: clamp(1.25rem, 5vw, 4rem);
+
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--midnight);
+    color: var(--cream);
+    line-height: 1.65;
+    font-size: 17px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* paper-grain overlay everywhere */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .045;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection { background: var(--ember); color: #1a1207; }
+
+  /* ============== TYPE ============== */
+  h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.08; letter-spacing: -0.01em; }
+
+  .eyebrow {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: .8rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+  .eyebrow.on-paper { color: var(--ember-ink); }
+
+  .container { max-width: var(--maxw); margin: 0 auto; padding-left: var(--pad); padding-right: var(--pad); }
+
+  /* ============== BUTTONS ============== */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .55em;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    letter-spacing: .005em;
+    color: #2a1604;
+    background: linear-gradient(165deg, var(--fire) 0%, var(--amber) 42%, var(--ember) 100%);
+    padding: 1rem 1.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    min-height: 56px;
+    box-shadow: 0 0 0 1px rgba(255,210,120,.4) inset,
+                0 10px 30px -8px rgba(239,138,53,.55),
+                0 2px 6px rgba(0,0,0,.25);
+    transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s ease, filter .25s ease;
+    white-space: nowrap;
+  }
+  .cta .arrow { transition: transform .25s cubic-bezier(.2,.7,.3,1); }
+  .cta:hover { transform: translateY(-2px); filter: brightness(1.04);
+    box-shadow: 0 0 0 1px rgba(255,210,120,.55) inset,
+                0 16px 40px -8px rgba(239,138,53,.7),
+                0 3px 8px rgba(0,0,0,.3); }
+  .cta:hover .arrow { transform: translateX(4px); }
+  .cta:active { transform: translateY(0); }
+
+  /* breathing glow on the primary buy buttons */
+  .cta-glow { position: relative; overflow: hidden; }
+  .cta-glow::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 0;
+    box-shadow: 0 0 0 0 rgba(246,178,74,.55);
+    animation: ctaPulse 2.8s ease-out infinite;
+  }
+  /* light sweep */
+  .cta-glow::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; z-index: 1;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    transform: skewX(-18deg); transition: none; pointer-events: none;
+    animation: ctaSweep 4.5s ease-in-out infinite;
+  }
+  .cta-glow > * { position: relative; z-index: 2; }
+  @keyframes ctaPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(246,178,74,.5); }
+    70%  { box-shadow: 0 0 0 16px rgba(246,178,74,0); }
+    100% { box-shadow: 0 0 0 0 rgba(246,178,74,0); }
+  }
+  @keyframes ctaSweep {
+    0%, 55% { left: -60%; }
+    78%, 100% { left: 130%; }
+  }
+  .cta .price-tag {
+    font-weight: 700; opacity: .85;
+    border-left: 1px solid rgba(42,22,4,.28); padding-left: .6em; margin-left: .15em;
+  }
+
+  /* buy module: assurances + secure line */
+  .buy-block { display: inline-flex; flex-direction: column; gap: 1.1rem; }
+  .final .buy-block, .final .price-row { align-items: center; }
+
+  .assurances {
+    list-style: none; display: flex; flex-wrap: wrap; gap: .6rem 1.4rem;
+    padding: 0; margin: 0;
+  }
+  .assurances li {
+    display: inline-flex; align-items: center; gap: .5em; white-space: nowrap;
+    font-size: .92rem; font-weight: 500; color: var(--cream-soft); letter-spacing: .005em;
+  }
+  .assurances li svg { width: 17px; height: 17px; color: var(--amber); flex: none; }
+
+  .secure {
+    display: inline-flex; align-items: center; gap: .5em;
+    font-size: .82rem; letter-spacing: .04em; color: var(--cave-blue);
+  }
+  .secure svg { width: 14px; height: 14px; flex: none; opacity: .85; }
+
+  /* final-CTA purchase card */
+  .buy-card {
+    position: relative;
+    margin: 2.2rem auto 0;
+    max-width: 520px;
+    padding: clamp(1.8rem, 4vw, 2.6rem) clamp(1.5rem, 4vw, 2.6rem);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(138,155,192,.1), rgba(138,155,192,.025));
+    border: 1px solid rgba(246,178,74,.25);
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
+    backdrop-filter: blur(6px);
+  }
+  .buy-card .price-row { justify-content: center; gap: 1.1rem; }
+  .buy-card .assurances { justify-content: center; margin-top: 1.5rem; }
+  .buy-card .secure { margin-top: 1rem; }
+  .buy-card .save-flag {
+    display: inline-flex; align-items: center; gap: .5em;
+    font-family: var(--sans); font-weight: 700; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    color: #2a1604; background: linear-gradient(165deg, var(--fire), var(--amber));
+    padding: .4rem .8rem; border-radius: 999px; margin-bottom: 1.3rem;
+    box-shadow: 0 6px 18px -8px rgba(239,138,53,.7);
+  }
+
+  .price-stack { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+  .price-stack .price-note { font-size: .8rem; color: var(--cave-blue); letter-spacing: .02em; margin-top: .45rem; font-family: var(--sans); }
+  .final .price-stack, .buy-card .price-stack { align-items: center; }
+
+  /* sticky mobile buy bar */
+  .mobile-cta {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 120;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .7rem .9rem calc(.7rem + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(12,17,36,.86), rgba(12,17,36,.97));
+    border-top: 1px solid rgba(246,178,74,.22);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 -10px 30px -12px rgba(0,0,0,.7);
+    transform: translateY(120%); transition: transform .4s cubic-bezier(.2,.7,.3,1);
+  }
+  .mobile-cta.show { transform: translateY(0); }
+  .mobile-cta .m-left { display: flex; flex-direction: column; line-height: 1.1; }
+  .mobile-cta .m-title { font-family: var(--serif); font-size: 1.02rem; color: var(--cream); }
+  .mobile-cta .m-sub { font-size: .72rem; color: var(--cave-blue); letter-spacing: .02em; margin-top: .15rem; }
+  .mobile-cta .cta { padding: .8rem 1.25rem; min-height: 48px; font-size: 1rem; flex: none; }
+  @media (min-width: 721px) { .mobile-cta { display: none; } }
+
+  .price-row { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+  .price {
+    font-family: var(--serif);
+    font-size: 2.6rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--cream);
+  }
+  .price .cur { color: var(--amber); font-size: .65em; vertical-align: .35em; margin-right: .04em; }
+  .price.on-paper { color: var(--ink); }
+  .price.on-paper .cur { color: var(--ember-ink); }
+
+  .micro {
+    font-size: .92rem;
+    color: var(--cave-blue);
+    letter-spacing: .01em;
+    margin-top: 1rem;
+  }
+  .micro.on-paper { color: var(--ink-faint); }
+  .micro em { font-style: italic; color: inherit; }
+
+  /* ============== HEADER ============== */
+  header.site {
+    position: relative;
+    z-index: 5;
+    border-bottom: 1px solid rgba(138,155,192,.14);
+  }
+  .site-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1.4rem; padding-bottom: 1.4rem;
+  }
+  .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; color: var(--cream); }
+  .brand .ember-dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, var(--fire), var(--ember) 70%);
+    box-shadow: 0 0 12px 1px rgba(246,178,74,.8), 0 0 26px 4px rgba(239,138,53,.4);
+  }
+  .brand .name {
+    font-family: var(--sans); font-weight: 700; font-size: .82rem;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--cream-soft); white-space: nowrap;
+  }
+  .header-cta {
+    font-family: var(--sans); font-weight: 700; font-size: .85rem;
+    color: #2a1604; text-decoration: none; letter-spacing: .01em;
+    display: inline-flex; align-items: center; gap: .45em;
+    padding: .62rem 1.1rem; border-radius: 999px; white-space: nowrap;
+    background: linear-gradient(165deg, var(--fire), var(--amber) 55%, var(--ember));
+    box-shadow: 0 0 0 1px rgba(255,210,120,.4) inset, 0 6px 18px -8px rgba(239,138,53,.7);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .header-cta:hover { transform: translateY(-1px); filter: brightness(1.04);
+    box-shadow: 0 0 0 1px rgba(255,210,120,.55) inset, 0 10px 24px -8px rgba(239,138,53,.8); }
+  .header-cta .arrow { transition: transform .2s ease; }
+  .header-cta:hover .arrow { transform: translateX(3px); }
+
+  /* ============== SECTION SHELLS ============== */
+  section { position: relative; }
+  .midnight-bg { background: var(--midnight); }
+  .paper-bg { background: var(--paper); color: var(--ink); }
+
+  .sky {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
+  }
+  .sky canvas { width: 100%; height: 100%; display: block; }
+
+  .glow-base {
+    position: absolute; left: 50%; bottom: -10%; transform: translateX(-50%);
+    width: min(900px, 120%); height: 380px; pointer-events: none; z-index: 0;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(239,138,53,.28), rgba(239,138,53,.07) 45%, transparent 70%);
+    filter: blur(8px);
+  }
+
+  /* ============== HERO ============== */
+  .hero { padding-top: clamp(2.5rem, 6vw, 5rem); padding-bottom: clamp(3.5rem, 8vw, 7rem); }
+  .hero-bg-grad {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(120% 80% at 80% -10%, rgba(42,60,104,.55), transparent 55%),
+      radial-gradient(100% 70% at 12% 110%, rgba(239,138,53,.14), transparent 60%),
+      linear-gradient(180deg, var(--midnight) 0%, var(--midnight-2) 60%, var(--blue-deep) 100%);
+  }
+  .hero-grid {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  .hero-copy { max-width: 36rem; }
+  .hero-title {
+    font-size: clamp(2.7rem, 7vw, 5rem);
+    line-height: 1.02;
+    margin: 1.1rem 0 1.1rem;
+    color: var(--cream);
+  }
+  .hero-subtitle {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    color: var(--cave-blue);
+    line-height: 1.4;
+    margin-bottom: 2rem;
+    max-width: 30rem;
+  }
+  .hero-headline {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+    line-height: 1.3; color: var(--cream); margin-bottom: 1rem;
+  }
+  .hero-headline .em { color: var(--amber); font-style: italic; }
+  .hero-subhead {
+    font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+    color: var(--cream-soft); line-height: 1.7; margin-bottom: 2.2rem; max-width: 32rem;
+  }
+  .hero-buy { margin-top: .5rem; }
+
+  /* book mockup */
+  .book-wrap { position: relative; display: flex; justify-content: center; z-index: 2; }
+  .book {
+    position: relative;
+    width: min(340px, 78%);
+    aspect-ratio: 1536 / 2752;
+    border-radius: 5px 9px 9px 5px;
+    overflow: hidden;
+    box-shadow:
+      -1px 0 0 rgba(255,255,255,.06) inset,
+      0 1px 0 rgba(255,255,255,.05) inset,
+      0 40px 70px -20px rgba(0,0,0,.7),
+      0 18px 40px -20px rgba(0,0,0,.6);
+    transform: perspective(1600px) rotateY(-11deg) rotateX(1.5deg);
+    transition: transform .6s cubic-bezier(.2,.7,.3,1);
+  }
+  .book:hover { transform: perspective(1600px) rotateY(-5deg) rotateX(1deg) translateY(-4px); }
+  .book img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  /* spine + page edges */
+  .book::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 16px; z-index: 3;
+    background: linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,.12) 45%, rgba(255,255,255,.08) 60%, transparent 100%);
+  }
+  .book::after {
+    content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 40%; z-index: 3;
+    background: linear-gradient(105deg, transparent 60%, rgba(255,255,255,.06) 85%, rgba(255,255,255,.12) 100%);
+    pointer-events: none;
+  }
+  .book-shadow {
+    position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+    width: 70%; height: 60px; border-radius: 50%;
+    background: radial-gradient(50% 60% at 50% 50%, rgba(0,0,0,.55), transparent 72%);
+    filter: blur(10px); z-index: 1;
+  }
+  .book-halo {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 130%; height: 120%; z-index: 0; pointer-events: none;
+    background: radial-gradient(50% 50% at 50% 60%, rgba(246,178,74,.18), transparent 62%);
+    filter: blur(20px);
+  }
+
+  /* ============== HOOK ============== */
+  .hook { padding: clamp(4rem, 9vw, 8rem) 0; overflow: hidden;
+    background: linear-gradient(180deg, var(--blue-deep) 0%, var(--midnight-2) 55%, var(--midnight) 100%); }
+  .hook .container { position: relative; z-index: 2; max-width: 880px; text-align: center; }
+  .hook .mark {
+    width: 38px; height: 38px; margin: 0 auto 2rem; display: block;
+  }
+  .hook p {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(1.4rem, 3.1vw, 2.15rem);
+    line-height: 1.42; color: var(--cream); text-wrap: pretty;
+  }
+  .hook p .accent { color: var(--amber); font-style: italic; }
+
+  /* ============== WHAT'S INSIDE ============== */
+  .inside { padding: clamp(4rem, 9vw, 8.5rem) 0;
+    background: linear-gradient(180deg, var(--midnight) 0%, var(--blue-deep) 48%, var(--midnight) 100%); }
+  .inside .container { position: relative; z-index: 2; }
+  .inside-head { max-width: 720px; }
+  .inside-head h2 { font-size: clamp(2.2rem, 5vw, 3.4rem); color: var(--cream); }
+  .inside-head .lead {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(1.2rem, 2.4vw, 1.55rem); color: var(--cave-blue);
+    line-height: 1.45; margin-top: 1.2rem; max-width: 40rem;
+  }
+  .parts { margin-top: clamp(2.5rem, 5vw, 4.5rem); display: grid; gap: clamp(3rem, 5vw, 4.5rem); }
+  .part { position: relative; }
+  .part-watermark {
+    position: absolute; top: -3rem; right: 0; z-index: 0; pointer-events: none;
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(6.5rem, 16vw, 13rem); line-height: 1;
+    color: rgba(246,178,74,.07); user-select: none;
+  }
+  .part-label {
+    position: relative; z-index: 1;
+    display: flex; align-items: baseline; gap: 1.1rem; margin-bottom: 1.6rem;
+    border-bottom: 1px solid rgba(138,155,192,.18); padding-bottom: 1.1rem;
+  }
+  .part-num {
+    font-family: var(--sans); font-weight: 700; font-size: .76rem; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--amber); flex: none;
+    display: inline-flex; align-items: center; gap: .55rem; transform: translateY(-.15em);
+  }
+  .part-num::before { content:""; width: 22px; height: 1px; background: var(--amber); display:inline-block; opacity:.65; }
+  .part-name {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.35rem, 2.6vw, 1.95rem);
+    color: var(--cream); line-height: 1.12;
+  }
+  .chapters { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .chapter {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: .9rem;
+    padding: 1.6rem 1.4rem 1.75rem;
+    background: linear-gradient(180deg, rgba(138,155,192,.09), rgba(138,155,192,.02));
+    border: 1px solid rgba(138,155,192,.14);
+    border-radius: 16px;
+    transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease, border-color .35s ease, background .35s ease;
+  }
+  .chapter::after {
+    content:""; position:absolute; inset:0; border-radius:16px; pointer-events:none;
+    background: radial-gradient(120% 90% at 50% 0%, rgba(246,178,74,.16), transparent 60%);
+    opacity:0; transition: opacity .35s ease;
+  }
+  .chapter:hover {
+    transform: translateY(-5px);
+    border-color: rgba(246,178,74,.4);
+    background: linear-gradient(180deg, rgba(138,155,192,.13), rgba(138,155,192,.03));
+    box-shadow: 0 18px 38px -18px rgba(0,0,0,.7), 0 0 0 1px rgba(246,178,74,.12);
+  }
+  .chapter:hover::after { opacity:1; }
+  .ch-icon {
+    width: 46px; height: 46px; display: grid; place-items: center;
+    border-radius: 12px; flex: none;
+    background: radial-gradient(120% 120% at 30% 20%, rgba(246,178,74,.3), rgba(239,138,53,.1));
+    border: 1px solid rgba(246,178,74,.22);
+    color: var(--amber);
+    box-shadow: 0 0 18px -4px rgba(246,178,74,.28);
+  }
+  .ch-icon svg { width: 23px; height: 23px; }
+  .ch-name {
+    font-family: var(--serif); font-weight: 500; font-size: 1.2rem;
+    color: var(--cream); line-height: 1.22; margin-top: auto;
+  }
+  .ch-idx { font-size: .7rem; font-weight: 700; letter-spacing: .16em; color: var(--cave-blue); text-transform: uppercase; }
+
+  /* ============== A TASTE (pull-quotes) ============== */
+  .taste { padding: clamp(4.5rem, 10vw, 9rem) 0;
+    background: linear-gradient(180deg, var(--midnight) 0%, var(--blue-deep) 50%, var(--midnight) 100%); }
+  .taste .container { position: relative; z-index: 2; }
+  .taste-eyebrow { text-align: center; display: block; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .quotes { display: grid; gap: clamp(3rem, 6vw, 5.5rem); max-width: 960px; margin: 0 auto; }
+  .pquote { position: relative; text-align: center; padding: 0 clamp(0, 4vw, 2rem); }
+  .pquote .qmark {
+    font-family: var(--serif); font-size: clamp(4rem, 9vw, 7rem); line-height: .6;
+    color: rgba(246,178,74,.32); display: block; height: .55em;
+  }
+  .pquote blockquote {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(1.5rem, 3.6vw, 2.6rem); line-height: 1.34;
+    color: var(--cream); text-wrap: balance;
+  }
+  .pquote .em { color: var(--fire); }
+  .pquote .rule {
+    width: 46px; height: 2px; margin: 1.8rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--ember), transparent);
+  }
+
+  /* ============== GIFT ============== */
+  .gift { padding: clamp(4rem, 9vw, 8rem) 0; background: var(--midnight); }
+  .gift .container { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .gift h2 { font-size: clamp(2rem, 4.6vw, 3.1rem); color: var(--cream); line-height: 1.1; }
+  .gift p { font-size: 1.12rem; color: var(--cream-soft); line-height: 1.75; max-width: 34rem; }
+  .gift p em { font-style: italic; color: var(--amber); }
+  .gift-visual {
+    position: relative; aspect-ratio: 4/3; border-radius: 20px; overflow: hidden;
+    background:
+      radial-gradient(80% 90% at 30% 20%, rgba(42,60,104,.95), transparent 60%),
+      radial-gradient(70% 80% at 80% 105%, rgba(239,138,53,.18), transparent 60%),
+      linear-gradient(160deg, var(--blue-mid), var(--midnight) 80%);
+    border: 1px solid rgba(138,155,192,.16);
+    display: grid; place-items: center;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .gift-visual .ribbon {
+    font-family: var(--serif); font-style: italic; color: var(--cream);
+    font-size: clamp(1.3rem,2.6vw,1.9rem); text-align: center; line-height: 1.4; z-index: 2;
+    padding: 2rem;
+  }
+  .gift-visual .ribbon span { color: var(--amber); }
+
+  /* ============== TRUST ============== */
+  .trust { padding: clamp(4rem, 9vw, 7rem) 0;
+    background: linear-gradient(180deg, var(--midnight) 0%, var(--blue-deep) 100%); }
+  .trust .container { max-width: 760px; text-align: center; position: relative; z-index: 2; }
+  .trust h2 { font-size: clamp(1.9rem, 4.2vw, 2.8rem); color: var(--cream); }
+  .trust h2 em { font-style: italic; color: var(--amber); }
+  .trust p { font-size: clamp(1.05rem, 1.8vw, 1.2rem); color: var(--cream-soft); line-height: 1.75; margin-top: 1.3rem; }
+  .trust a.link { color: var(--amber); text-decoration: none; border-bottom: 1px solid rgba(246,178,74,.4); transition: color .2s, border-color .2s; }
+  .trust a.link:hover { color: var(--fire); border-color: var(--fire); }
+
+  /* ============== FINAL CTA ============== */
+  .final { padding: clamp(5rem, 11vw, 10rem) 0; text-align: center; overflow: hidden;
+    background: radial-gradient(90% 120% at 50% 120%, rgba(239,138,53,.22), transparent 55%), var(--midnight); }
+  .final .container { position: relative; z-index: 3; max-width: 720px; }
+  .final h2 { font-size: clamp(2.6rem, 7vw, 4.6rem); color: var(--cream); }
+  .final p { font-family: var(--serif); font-style: italic; font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+    color: var(--cave-blue); line-height: 1.45; margin: 1.4rem auto 2.6rem; max-width: 32rem; }
+  .final .price-row { justify-content: center; margin-bottom: 1.6rem; }
+  .final-fire {
+    position: absolute; left: 50%; bottom: -40px; transform: translateX(-50%);
+    width: min(620px, 110%); height: 320px; z-index: 1; pointer-events: none;
+    background: radial-gradient(50% 70% at 50% 100%, rgba(255,207,107,.35), rgba(239,138,53,.12) 45%, transparent 72%);
+    filter: blur(10px);
+  }
+
+  /* ============== FOOTER ============== */
+  footer.site {
+    background: var(--midnight); padding: 2.6rem 0 3.2rem;
+    border-top: 1px solid rgba(138,155,192,.12); text-align: center;
+  }
+  footer.site .fline {
+    font-size: .92rem; color: var(--cave-blue); letter-spacing: .02em; line-height: 1.9;
+  }
+  footer.site .fline .sep { color: rgba(138,155,192,.45); margin: 0 .55em; }
+  footer.site .ftitle { font-family: var(--serif); font-style: italic; color: var(--cream-soft); }
+
+  /* ============== REVEAL ============== */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.7,.3,1), transform .9s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.seen { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .reveal.d1 { transition-delay: .08s; }
+  .reveal.d2 { transition-delay: .16s; }
+  .reveal.d3 { transition-delay: .24s; }
+
+  /* embers */
+  .ember-field { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 2; }
+  .ember-p {
+    position: absolute; bottom: -10px; width: 4px; height: 4px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, var(--fire), var(--ember) 75%);
+    box-shadow: 0 0 8px 1px rgba(246,178,74,.7);
+    opacity: 0; animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    12%  { opacity: .9; }
+    80%  { opacity: .7; }
+    100% { transform: translateY(-340px) translateX(var(--drift, 20px)) scale(.3); opacity: 0; }
+  }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 920px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-copy { max-width: none; order: 2; }
+    .book-wrap { order: 1; }
+    .book { width: min(280px, 64%); transform: perspective(1600px) rotateY(-8deg); }
+    .chapters { grid-template-columns: repeat(2, 1fr); }
+    .gift .container { grid-template-columns: 1fr; }
+    .gift-visual { order: -1; max-width: 480px; }
+  }
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .chapters { grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .chapter { padding: 1.15rem 1rem; }
+    .ch-name { font-size: 1.05rem; }
+    .price { font-size: 2.2rem; }
+    .cta { width: 100%; justify-content: center; }
+    .hero-buy .price-row { width: 100%; }
+    .part-label { flex-direction: column; gap: .3rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .ember-p { display: none; }
+    .book, .book:hover { transition: none; }
+    .cta-glow::before, .cta-glow::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site">
+    <div class="container site-inner">
+      <a class="brand" href="#top" aria-label="I Explains You — home">
+        <span class="ember-dot" aria-hidden="true"></span>
+        <span class="name">I Explains You</span>
+      </a>
+      <!-- TODO: replace href="#" with your checkout link -->
+      <a class="header-cta" href="#">Get the Book <span class="price-tag">$5</span> <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero midnight-bg" data-screen-label="Hero">
+      <div class="hero-bg-grad" aria-hidden="true"></div>
+      <div class="sky" aria-hidden="true"><canvas id="starfield"></canvas></div>
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow reveal">From the curious minds at I Explains You</span>
+            <h1 class="hero-title reveal d1">The Curious History of Being Human</h1>
+            <p class="hero-subtitle reveal d1">Twelve Small Mysteries About You, Your Body, and Your Distant Ancestors</p>
+            <p class="hero-headline reveal d2">You are <span class="em">far stranger</span>, and far more remarkable, than you think.</p>
+            <p class="hero-subhead reveal d2">A short, beautiful book of twelve mysteries about your body, your mind, and the distant ancestors still living inside you.</p>
+            <div class="hero-buy reveal d3" id="buy">
+              <div class="buy-block">
+                <div class="price-row">
+                  <!-- TODO: replace href="#" with your checkout link -->
+                  <a class="cta cta-glow" href="#">Get the Book <span class="arrow" aria-hidden="true">→</span></a>
+                  <span class="price-stack">
+                    <span class="price"><span class="cur">$</span>5</span>
+                    <span class="price-note">one-time · instant download</span>
+                  </span>
+                </div>
+                <ul class="assurances">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>Instant download</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10.5 18h3"/></svg>Read on any device</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8.5c-2 0-3.5 1.6-3.5 3.5S5 15.5 7 15.5c2.4 0 3.8-2 5-3.5 1.2-1.5 2.6-3.5 5-3.5 2 0 3.5 1.6 3.5 3.5S19 15.5 17 15.5c-2.4 0-3.8-2-5-3.5"/></svg>Yours to keep forever</li>
+                </ul>
+                <span class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>Secure checkout · no subscription, ever</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="book-wrap reveal d2">
+            <span class="book-halo" aria-hidden="true"></span>
+            <span class="book-shadow" aria-hidden="true"></span>
+            <div class="book">
+              <img src="assets/book-cover.jpeg" alt="The Curious History of Being Human — book cover showing a lone figure beside a fire under a starlit sky" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HOOK ===================== -->
+    <section class="hook" data-screen-label="The Hook">
+      <div class="ember-field" data-embers="6" aria-hidden="true"></div>
+      <div class="container">
+        <svg class="mark reveal" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2c1.2 3.2.2 5-1.4 6.6C8.7 10.5 8 12.3 8 14a4 4 0 0 0 8 0c0-1.6-.6-2.8-1.3-3.9 1.7 1 2.8 2.8 2.8 5.1a5.5 5.5 0 1 1-11 0c0-3.2 2-5.3 3.2-7.1C11 6 12 4.2 12 2Z" stroke="#f6b24a" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        <p class="reveal d1">We rarely stop to wonder about the strangest things we do every single day. Why we dream. Why we cry from feeling. Why we laugh, why we ache in the lower back, why we come in so many beautiful shades. This little book takes twelve of those everyday mysteries and tells you the surprising, deep-time story behind each one — and by the last page, <span class="accent">the ordinary business of being alive feels astonishing again.</span></p>
+      </div>
+    </section>
+
+    <!-- ===================== WHAT'S INSIDE ===================== -->
+    <section class="inside midnight-bg" data-screen-label="What's Inside">
+      <div class="sky" aria-hidden="true"><canvas id="starfield3"></canvas></div>
+      <div class="container">
+        <div class="inside-head">
+          <span class="eyebrow reveal">What's inside</span>
+          <h2 class="reveal d1" style="margin-top:1rem">Twelve mysteries, three parts.</h2>
+          <p class="lead reveal d1">Twelve quick, captivating reads across three parts — small enough for one sitting, big enough to stay with you.</p>
+        </div>
+
+        <div class="parts">
+          <!-- PART ONE -->
+          <div class="part reveal">
+            <span class="part-watermark" aria-hidden="true">I</span>
+            <div class="part-label">
+              <span class="part-num">Part One</span>
+              <span class="part-name">Where We Came From</span>
+            </div>
+            <div class="chapters" id="part1"></div>
+          </div>
+          <!-- PART TWO -->
+          <div class="part reveal">
+            <span class="part-watermark" aria-hidden="true">II</span>
+            <div class="part-label">
+              <span class="part-num">Part Two</span>
+              <span class="part-name">The Strange Machinery of Being Alive</span>
+            </div>
+            <div class="chapters" id="part2"></div>
+          </div>
+          <!-- PART THREE -->
+          <div class="part reveal">
+            <span class="part-watermark" aria-hidden="true">III</span>
+            <div class="part-label">
+              <span class="part-num">Part Three</span>
+              <span class="part-name">How Our Ancestors Actually Lived</span>
+            </div>
+            <div class="chapters" id="part3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== A TASTE ===================== -->
+    <section class="taste" data-screen-label="A Taste">
+      <div class="ember-field" data-embers="7" aria-hidden="true"></div>
+      <div class="container">
+        <span class="eyebrow taste-eyebrow reveal">A taste</span>
+        <div class="quotes">
+          <figure class="pquote reveal">
+            <span class="qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>The cousins we lost are not entirely gone — <span class="em">in a small, quiet way, they are still here, inside us.</span></blockquote>
+            <span class="rule" aria-hidden="true"></span>
+          </figure>
+          <figure class="pquote reveal">
+            <span class="qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>Our tears are a bridge to one another — <span class="em">a wordless way of saying: I am not alright, and I need you.</span></blockquote>
+            <span class="rule" aria-hidden="true"></span>
+          </figure>
+          <figure class="pquote reveal">
+            <span class="qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>Curiosity, like firelight, is meant to be passed around — <span class="em">it only grows brighter for the sharing.</span></blockquote>
+            <span class="rule" aria-hidden="true"></span>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GIFT ===================== -->
+    <section class="gift midnight-bg" data-screen-label="Gift Angle">
+      <div class="container">
+        <div class="gift-copy">
+          <span class="eyebrow reveal">A small, lovely gift</span>
+          <h2 class="reveal d1" style="margin-top:1rem">The perfect little gift for a curious mind.</h2>
+          <p class="reveal d1" style="margin-top:1.3rem">Know someone who loves a fascinating fact at the dinner table? Someone who never stopped asking <em>why</em>? This is a small, lovely thing to give a friend, a parent, or a curious kid — and a quiet reminder that wondering is one of the oldest, most human things we do.</p>
+        </div>
+        <div class="gift-visual reveal d2" aria-hidden="true">
+          <div class="ember-field" data-embers="5"></div>
+          <p class="ribbon">Wondering is one of the oldest, most <span>human</span> things we do.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRUST ===================== -->
+    <section class="trust" data-screen-label="Trust Strip">
+      <div class="sky" aria-hidden="true"><canvas id="starfield2"></canvas></div>
+      <div class="container">
+        <span class="eyebrow reveal">Who made this</span>
+        <h2 class="reveal d1" style="margin-top:1rem">Made by the people behind <em>I Explains You</em></h2>
+        <p class="reveal d1">We spend our days exploring how ancient humans actually lived — the fires, the first words, the first art. This book gathers the most surprising of those stories in one place. If it sparks something, come wonder along with us <a class="link" href="#" target="_blank" rel="noopener">on YouTube</a>.</p>
+      </div>
+    </section>
+
+    <!-- ===================== FINAL CTA ===================== -->
+    <section class="final" data-screen-label="Final CTA">
+      <span class="final-fire" aria-hidden="true"></span>
+      <div class="ember-field" data-embers="9" aria-hidden="true"></div>
+      <div class="container">
+        <h2 class="reveal">Stay curious.</h2>
+        <p class="reveal d1">Twelve mysteries. One short, beautiful book. A new way of seeing yourself and everyone around you.</p>
+        <div class="buy-card reveal d2" id="buy-final">
+          <span class="save-flag"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:13px;height:13px"><path d="M12 2l2.4 6.3L21 9l-5 4.3L17.6 20 12 16.4 6.4 20 8 13.3 3 9l6.6-.7L12 2z"/></svg>Instant digital download</span>
+          <span class="price-stack">
+            <span class="price"><span class="cur">$</span>5</span>
+            <span class="price-note">one-time payment · no subscription</span>
+          </span>
+          <div class="price-row" style="margin-top:1.4rem">
+            <!-- TODO: replace href="#" with your checkout link -->
+            <a class="cta cta-glow" href="#">Get the Book <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+          <ul class="assurances">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>Read it tonight</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10.5 18h3"/></svg>Any device</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8.5c-2 0-3.5 1.6-3.5 3.5S5 15.5 7 15.5c2.4 0 3.8-2 5-3.5 1.2-1.5 2.6-3.5 5-3.5 2 0 3.5 1.6 3.5 3.5S19 15.5 17 15.5c-2.4 0-3.8-2-5-3.5"/></svg>Yours forever</li>
+          </ul>
+          <span class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>Secure checkout · start reading in minutes</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== STICKY MOBILE BUY BAR ===================== -->
+  <div class="mobile-cta" id="mobileCta" aria-hidden="true">
+    <span class="m-left">
+      <span class="m-title">The Curious History of Being Human</span>
+      <span class="m-sub">Instant download · one-time</span>
+    </span>
+    <!-- TODO: replace href="#" with your checkout link -->
+    <a class="cta cta-glow" href="#">Get it <span class="price-tag">$5</span></a>
+  </div>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site">
+    <div class="container">
+      <p class="fline">
+        <span class="ftitle">The Curious History of Being Human</span>
+        <span class="sep" aria-hidden="true">·</span>I Explains You
+        <span class="sep" aria-hidden="true">·</span>© <span id="year"></span> I Explains You. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    "use strict";
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    /* ---------- Chapters data + icons ---------- */
+    var I = {
+      cousins:  '<path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" opacity=".55"/><path d="M3 20c0-2.8 2.7-5 6-5s6 2.2 6 5"/><path d="M15 15.3c2.6.3 5 2.2 5 4.7" opacity=".55"/>',
+      stand:    '<circle cx="12" cy="4.5" r="2.2"/><path d="M12 7v8"/><path d="M12 9 8.5 11M12 9l3.5 2"/><path d="M12 15l-2.4 5.5M12 15l2.4 5.5"/>',
+      colors:   '<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16" fill="currentColor" opacity=".18" stroke="none"/><path d="M12 4v16"/>',
+      brain:    '<path d="M9.5 4.5A2.5 2.5 0 0 0 7 7v.2A2.6 2.6 0 0 0 5.5 12 2.6 2.6 0 0 0 7 16.8V17a2.5 2.5 0 0 0 5 .3V5a2.5 2.5 0 0 0-2.5-.5Z"/><path d="M14.5 4.5A2.5 2.5 0 0 1 17 7v.2A2.6 2.6 0 0 1 18.5 12 2.6 2.6 0 0 1 17 16.8V17a2.5 2.5 0 0 1-5 .3" opacity=".55"/>',
+      sleep:    '<path d="M20 14.5A8 8 0 1 1 9.5 4 6.3 6.3 0 0 0 20 14.5Z"/>',
+      dream:    '<path d="M6 13a4 4 0 0 1 .5-8 5 5 0 0 1 9.6 1.3A3.4 3.4 0 0 1 17 13Z"/><path d="m9 17 .01 0M12.5 19l.01 0M8 20.5l.01 0" opacity=".7"/>',
+      tears:    '<path d="M12 3s5 6.2 5 10a5 5 0 0 1-10 0c0-3.8 5-10 5-10Z"/>',
+      laugh:    '<circle cx="12" cy="12" r="9"/><path d="M8 14a4 4 0 0 0 8 0Z" fill="currentColor" stroke="none" opacity=".5"/><path d="M8.5 9.5h.01M15.5 9.5h.01"/>',
+      fire:     '<path d="M12 3c1.2 3 .2 4.8-1.3 6.3C9.4 10.6 9 12 9 13.3a3 3 0 0 0 6 0c0-1.2-.4-2.1-1-3 1.4.9 2.5 2.4 2.5 4.4a4.5 4.5 0 1 1-9 0c0-2.7 1.7-4.5 2.8-6C11 7.4 12 5.6 12 3Z"/>',
+      words:    '<path d="M4 5h16v10H9l-4 4V5Z"/><path d="M8 9h8M8 12h5" opacity=".7"/>',
+      art:      '<path d="M12 3a9 9 0 0 0 0 18c1.4 0 2-1 1.6-2-.5-1.3.4-2.4 1.7-2.4H17a4 4 0 0 0 4-4c0-5-4-9.6-9-9.6Z"/><circle cx="8" cy="11" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="7.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="16" cy="10" r="1.1" fill="currentColor" stroke="none"/>',
+      question: '<circle cx="12" cy="12" r="9"/><path d="M9.4 9.2a2.6 2.6 0 1 1 3.4 2.6c-.8.3-1.3 1-1.3 1.8v.4"/><path d="M11.9 17h.01"/>'
+    };
+    function icon(key){
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+I[key]+'</svg>';
+    }
+
+    var parts = {
+      part1: [
+        ["The Cousins We Lost","cousins"],
+        ["Why We Stood Up","stand"],
+        ["Why We Come in Different Colors","colors"],
+        ["The Big, Expensive Brain","brain"]
+      ],
+      part2: [
+        ["The Moment You Fall Asleep","sleep"],
+        ["Why We Dream","dream"],
+        ["The Tears Only Humans Cry","tears"],
+        ["Why We Laugh","laugh"]
+      ],
+      part3: [
+        ["The Night We Tamed Fire","fire"],
+        ["How Words Were Born","words"],
+        ["The First Art","art"],
+        ["The First Question","question"]
+      ]
+    };
+    var n = 0;
+    Object.keys(parts).forEach(function(pid){
+      var host = document.getElementById(pid);
+      parts[pid].forEach(function(ch){
+        n++;
+        var num = (n<10?"0":"")+n;
+        var el = document.createElement("div");
+        el.className = "chapter";
+        el.innerHTML =
+          '<span class="ch-icon" aria-hidden="true">'+icon(ch[1])+'</span>'+
+          '<span class="ch-idx">Chapter '+num+'</span>'+
+          '<span class="ch-name">'+ch[0]+'</span>';
+        host.appendChild(el);
+      });
+    });
+
+    /* ---------- Starfield ---------- */
+    function drawStars(canvas){
+      if(!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var dpr = Math.min(window.devicePixelRatio||1, 2);
+      function size(){
+        var r = canvas.getBoundingClientRect();
+        canvas.width = Math.max(1, r.width*dpr);
+        canvas.height = Math.max(1, r.height*dpr);
+        render();
+      }
+      function render(){
+        var w = canvas.width, h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+        var count = Math.floor((w*h)/(9000*dpr));
+        count = Math.min(count, 220);
+        for(var i=0;i<count;i++){
+          var x = Math.random()*w, y = Math.random()*h*0.92;
+          var rad = (Math.random()*1.3+0.3)*dpr;
+          var a = Math.random()*0.7+0.15;
+          // fade stars toward the bottom
+          a *= 1 - (y/h)*0.6;
+          ctx.beginPath();
+          ctx.arc(x,y,rad,0,Math.PI*2);
+          ctx.fillStyle = "rgba(244,234,215,"+a.toFixed(2)+")";
+          ctx.fill();
+        }
+      }
+      size();
+      var t;
+      window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(size,200); });
+    }
+    drawStars(document.getElementById("starfield"));
+    drawStars(document.getElementById("starfield2"));
+    drawStars(document.getElementById("starfield3"));
+
+    /* ---------- Embers ---------- */
+    if(!reduce){
+      document.querySelectorAll(".ember-field").forEach(function(field){
+        var count = parseInt(field.getAttribute("data-embers"),10) || 5;
+        for(var i=0;i<count;i++){
+          var p = document.createElement("span");
+          p.className = "ember-p";
+          var dur = (6 + Math.random()*7).toFixed(1);
+          var delay = (Math.random()*8).toFixed(1);
+          var drift = (Math.random()*60 - 20).toFixed(0);
+          var sz = (3 + Math.random()*3).toFixed(1);
+          p.style.left = (Math.random()*100).toFixed(1)+"%";
+          p.style.width = p.style.height = sz+"px";
+          p.style.animationDuration = dur+"s";
+          p.style.animationDelay = "-"+delay+"s";
+          p.style.setProperty("--drift", drift+"px");
+          field.appendChild(p);
+        }
+      });
+    }
+
+    /* ---------- Scroll reveal + sticky buy bar (scroll-position based; robust everywhere) ---------- */
+    var reveals = [].slice.call(document.querySelectorAll(".reveal"));
+    var bar = document.getElementById("mobileCta");
+    var heroBuy = document.getElementById("buy");
+    var finalBuy = document.getElementById("buy-final");
+
+    if(reduce){
+      reveals.forEach(function(r){ r.classList.add("in"); });
+    }
+
+    var ticking = false;
+    function onFrame(){
+      ticking = false;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+
+      // reveal anything that has entered the viewport
+      if(!reduce){
+        for(var i = reveals.length - 1; i >= 0; i--){
+          var rect = reveals[i].getBoundingClientRect();
+          if(rect.top < vh * 0.9 && rect.bottom > 0){
+            var el = reveals[i];
+            el.classList.add("in");
+            // safety net: lock to final state after the fade should have finished,
+            // so content can never stay hidden if transitions don't composite
+            (function(node){ setTimeout(function(){ node.classList.add("seen"); }, 1100); })(el);
+            reveals.splice(i, 1);
+          }
+        }
+      }
+
+      // sticky mobile bar: show after the hero CTA scrolls away, hide at the final card
+      if(bar && heroBuy && finalBuy){
+        var heroGone = heroBuy.getBoundingClientRect().bottom < 8;
+        var finalShown = finalBuy.getBoundingClientRect().top < vh * 0.9;
+        if(heroGone && !finalShown){ bar.classList.add("show"); bar.setAttribute("aria-hidden","false"); }
+        else { bar.classList.remove("show"); bar.setAttribute("aria-hidden","true"); }
+      }
+    }
+    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(onFrame); } }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("load", onFrame);
+    onFrame();
+    // a couple of safety passes in case fonts/layout settle after first paint
+    setTimeout(onFrame, 400);
+    setTimeout(onFrame, 1200);
+  })();
+  </script>
+
+</body>
+</html>
